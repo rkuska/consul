@@ -326,17 +326,8 @@ func (s *Server) establishLeadership() error {
 		return err
 	}
 
-	// attempt to bootstrap config entries
-	if err := s.bootstrapConfigEntries(s.config.ConfigEntryBootstrap); err != nil {
-		return err
-	}
-
 	s.getOrCreateAutopilotConfig()
 	s.autopilot.Start()
-
-	if err := s.caManager.InitializeCA(); err != nil {
-		return err
-	}
 
 	s.startConfigReplication()
 
@@ -371,7 +362,7 @@ func (s *Server) revokeLeadership() {
 	s.stopConnectLeader()
 
 	s.caManager.setCAProvider(nil, nil)
-	s.caManager.setState(CAStateUninitialized, false)
+	s.caManager.setState(caStateUninitialized, false)
 
 	s.stopACLTokenReaping()
 
